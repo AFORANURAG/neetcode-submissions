@@ -1,0 +1,37 @@
+func validTree(n int, edges [][]int) bool {
+    //  0
+  //   1
+  //  2
+  // 3
+  // 1:[2,3,4]
+  // 2:[4]
+
+  adj_list:=make(map[int][]int)
+  for _,edge:=range edges{
+	src,dest:=edge[0],edge[1]
+	adj_list[src]=append(adj_list[src],dest)
+	adj_list[dest]=append(adj_list[dest],src)
+  }
+  visited:=make(map[int]bool)
+
+  var dfs func(int,int)bool
+  dfs = func(node,pnode int)bool{
+	visited[node]=true
+	for _,nei:=range adj_list[node]{
+    if !visited[nei]{
+      isCyclic:=dfs(nei,node)
+      if isCyclic{
+        // fail fast
+        return true
+      }
+    }else{
+      if nei!=pnode{
+        return true
+      }
+    }
+	}
+	return false
+  }
+  
+return dfs(0,-1)==false && len(visited)==n
+}
